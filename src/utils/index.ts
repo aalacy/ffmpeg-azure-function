@@ -35,6 +35,12 @@ export const TRANSCRIPTED = "transcripted";
 
 sdk.auth(MONSTER_API_TOKEN);
 
+const padZero = (str, len = 2) => {
+  len = len || 2;
+  var zeros = new Array(len).join('0');
+  return (zeros + str).slice(-len);
+}
+
 export const calcMarginV = (height, position) =>
   height ? height * (1 - position / 100) : 30;
 
@@ -54,9 +60,8 @@ const parseAndRevertHex = (nakedHex) => {
     (isShort
       ? `${nakedHex.slice(3, 4)}${nakedHex.slice(3, 4)}`
       : nakedHex.slice(6, 8)) || "ff";
-
-  // const numericA = +((parseInt(a, 16) / 255).toFixed(2));
-  return `&H${twoDigitHexA}${twoDigitHexB}${twoDigitHexG}${twoDigitHexR}`;
+  const coverted = padZero((255 - parseInt(twoDigitHexA, 16)).toString(16))
+  return `&H00${twoDigitHexB}${twoDigitHexG}${twoDigitHexR}`;
 };
 
 const toTimeString = (ms) => {
@@ -97,7 +102,10 @@ export const getAudioKey = (key) => `${key}-audio.mp3`;
 
 export const getThumbnailKey = (key) => `${key}-thumbnail.png`;
 
-export const readFileContent = (filePath) => readFile(filePath);
+export const readFileContent = async (filePath) => {
+  const content = await readFile(filePath);
+  return content.toString('base64');
+};
 
 export const removeFile = async (filePath) => {
   try {

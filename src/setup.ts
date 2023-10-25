@@ -8,8 +8,10 @@ export function setupRedis() {
       password: "og7jpVhbsxpjr5cTGCa1JGwLoVt16Nk2RAzCaK61huQ=",
     })
     .on("error", (err) => console.log("Redis Client Error", err))
-    .on("connect", (data) => {
-      console.log("[redids] connected", data);
+    .on("reconnecting", () => console.log('redis reconnecting'))
+    .on("ready", () => console.log('redis ready'))
+    .on("connect", () => {
+      console.log("[redids] connected");
     })
     .connect();
 }
